@@ -17,7 +17,6 @@ import fnmatch
 import json
 import logging
 import multiprocessing
-import OpenSSL
 import os
 import shutil
 import StringIO
@@ -388,11 +387,11 @@ def table_backup(table_name):
         while table_schema is None:
             try:
                 table_schema = client_ddb.describe_table(TableName=table_name)['Table']
-            except (OpenSSL.SSL.SysCallError, OpenSSL.SSL.Error) as e:
+            except Exception as e:
                 if current_retry >= const_parameters.opensslerror_maxretry:
                     raise e
 
-                logger.warning("Got OpenSSL error, retrying...")
+                logger.warning("error, retrying...")
                 current_retry += 1
 
         table_schema = clean_table_schema(table_schema)
